@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from habits.models import Habit
+from habits.paginators import MyPagination
 from habits.permissions import IsOwner
 from habits.serializers import HabitSerializer
 
@@ -23,7 +24,8 @@ class HabitsListAPIView(generics.ListAPIView):
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
     permission_classes = [IsAuthenticated, IsOwner]  # an access only for user
-    # pagination_class = MyPagination
+    pagination_class = MyPagination
+
 
     # def get_queryset(self):
     #     if ModeratorAccessPermission().has_permission(self.request, self):
@@ -31,11 +33,12 @@ class HabitsListAPIView(generics.ListAPIView):
     #     else:
     #         return Lesson.objects.filter(owner=self.request.user)
     #
-    # def get(self, request):
-    #     queryset = Lesson.objects.all()
-    #     paginated_queryset = self.paginate_queryset(queryset)
-    #     serializer = LessonSerializer(paginated_queryset, many=True)
-    #     return self.get_paginated_response(serializer.data)
+    def get(self, request, **kwargs):
+        """ Adding logic for pagination"""
+        queryset = Habit.objects.all()
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = HabitSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 #
