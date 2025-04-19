@@ -19,30 +19,43 @@ class HabitCreateAPIView(generics.CreateAPIView):
 
 
 class HabitsListAPIView(generics.ListAPIView):
-    """View to create a list of habits for the user"""
+    """View to create a list of public habits"""
+
+    serializer_class = HabitSerializer
+    queryset = Habit.objects.filter(habit_is_public=True)
+    permission_classes = [IsAuthenticated, ]  # an access for all users
+    pagination_class = MyPagination
+
+
+
+    def get(self, request, **kwargs):
+        """ Adding logic for pagination"""
+        queryset = Habit.objects.filter(habit_is_public=True)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = HabitSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
+
+
+class HabitsUserListAPIView(generics.ListAPIView):
+    """View to create a list of habits for particular user"""
 
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
     permission_classes = [IsAuthenticated, IsOwner]  # an access only for user
     pagination_class = MyPagination
 
+    def get_queryset(self):
 
-    # def get_queryset(self):
-    #     if ModeratorAccessPermission().has_permission(self.request, self):
-    #         return Lesson.objects.all()
-    #     else:
-    #         return Lesson.objects.filter(owner=self.request.user)
-    #
+        return Habit.objects.filter(habit_user=self.request.user)
+
     def get(self, request, **kwargs):
         """ Adding logic for pagination"""
-        queryset = Habit.objects.all()
+        queryset = Habit.objects.filter(habit_user=self.request.user)
         paginated_queryset = self.paginate_queryset(queryset)
         serializer = HabitSerializer(paginated_queryset, many=True)
         return self.get_paginated_response(serializer.data)
 
 
-#
-#
 class HabitRetreiveAPIView(generics.RetrieveAPIView):
     """View to get a particular habit for the user"""
 
