@@ -1,5 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from habits.models import Habit
 from habits.paginators import MyPagination
@@ -23,13 +26,13 @@ class HabitsListAPIView(generics.ListAPIView):
 
     serializer_class = HabitSerializer
     queryset = Habit.objects.filter(habit_is_public=True)
-    permission_classes = [IsAuthenticated, ]  # an access for all users
+    permission_classes = [
+        IsAuthenticated,
+    ]  # an access for all users
     pagination_class = MyPagination
 
-
-
     def get(self, request, **kwargs):
-        """ Adding logic for pagination"""
+        """Adding logic for pagination"""
         queryset = Habit.objects.filter(habit_is_public=True)
         paginated_queryset = self.paginate_queryset(queryset)
         serializer = HabitSerializer(paginated_queryset, many=True)
@@ -49,7 +52,7 @@ class HabitsUserListAPIView(generics.ListAPIView):
         return Habit.objects.filter(habit_user=self.request.user)
 
     def get(self, request, **kwargs):
-        """ Adding logic for pagination"""
+        """Adding logic for pagination"""
         queryset = Habit.objects.filter(habit_user=self.request.user)
         paginated_queryset = self.paginate_queryset(queryset)
         serializer = HabitSerializer(paginated_queryset, many=True)
@@ -74,42 +77,36 @@ class HabitUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsOwner]  # an access only for user
 
 
-#
-#
 class HabitDestroyAPIView(generics.DestroyAPIView):
+    """View to delete a particular habit for the user"""
+
     queryset = Habit.objects.all()
     permission_classes = [IsAuthenticated, IsOwner]  # an access only for user
 
 
-#
-#
-# class SubscribeAPIView(APIView):
-#     serializer_class = SubscriptionSerializer
-#     queryset = Subscription.objects.all()
-#
-#     def post(self, request):
-#         user = request.user
-#         course_id = request.data.get("course")
-#         course = get_object_or_404(Course, id=course_id)
-#
-#         subscription, created = Subscription.objects.get_or_create(
-#             user=user, course=course
-#         )
-#
-#         if subscription.subscription == False:
-#             subscription.subscription = True
-#             subscription.save()
-#             message = "Subscription Added"
-#
-#         elif subscription.subscription == True:
-#             subscription.subscription = False
-#             subscription.save()
-#             message = "Subscription Deleted"
-#
-#         return Response({"message": {message}}, status=status.HTTP_201_CREATED)
-#
-#     def get(self, request):
-#         user = request.user
-#         subscriptions = Subscription.objects.filter(user=user)
-#         serializer = SubscriptionSerializer(subscriptions, many=True)
-#         return Response(serializer.data)
+class PublicAPIView(APIView):
+    serializer_class = HabitSerializer
+    queryset = Habit.objects.all()
+    permission_classes = [IsAuthenticated, IsOwner]  # an access only for user
+
+
+    def post(self, request, pk):
+        """View to make the habit publicly available or unavailable."""
+
+        message = ""
+        if Habit.objects.filter(habit_user=self.request.user).exists():
+
+
+            habit = get_object_or_404(Habit, id=pk)  # get a particular habit via request
+
+            if habit.habit_is_public:
+                habit.habit_is_public = False
+                habit.save()
+                message = "Habit is not public anymore"
+
+            elif not habit.habit_is_public:
+                habit.habit_is_public = True
+                habit.save()
+                message = "Habit is publicly available now"
+
+        return Response({"message": {message}}, status=status.HTTP_201_CREATED)
