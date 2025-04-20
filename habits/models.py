@@ -1,28 +1,26 @@
-# Связанная привычка — привычка, которая связана с другой привычкой, важно указывать для полезных привычек, но не для приятных.
-
 from django.db import models
 
 from users.models import User
 
-class NiceHabit(models.Model):
-    nice_habit_name = models.CharField(
-        max_length=300,
-        verbose_name="Nice Habit name",
-    )
-
-    nice_habit_user = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, blank=True, related_name="nice_habit_user"
-    )
-
-
-    is_nice_habit = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.nice_habit_name
-
-    class Meta:
-        verbose_name = "Nice Habit"
-        verbose_name_plural = "Nice Habits"
+# class NiceHabit(models.Model):
+#     nice_habit_name = models.CharField(
+#         max_length=300,
+#         verbose_name="Nice Habit name",
+#     )
+#
+#     nice_habit_user = models.ForeignKey(
+#         User, on_delete=models.CASCADE, related_name="nice_habit_user"
+#     )
+#
+#
+#     is_nice_habit = models.BooleanField(default=False)
+#
+#     def __str__(self):
+#         return self.nice_habit_name
+#
+#     class Meta:
+#         verbose_name = "Nice Habit"
+#         verbose_name_plural = "Nice Habits"
 
 # Create Model Mailing
 class Habit(models.Model):
@@ -50,18 +48,26 @@ class Habit(models.Model):
 
     habit_is_public = models.BooleanField(default=False)
 
+    is_nice_habit = models.BooleanField(default=False)
+
 
     habit_period = models.PositiveSmallIntegerField(
         verbose_name="Period for a habit (in days)", default=1
     )
 
-    nice_habit = models.ForeignKey(
-        NiceHabit, on_delete=models.CASCADE, null=True, blank=True, related_name="nice_habit"
+    nice_habit_name = models.CharField(
+        max_length=300,
+        verbose_name="Habit name",
+        default='Draft',
+        blank=True
     )
 
+    is_habit_reward = models.BooleanField(default=False)
 
     habit_reward = models.TextField(
-        verbose_name="Reward for a habit", null=True, blank=True
+        verbose_name="Reward for a habit",
+        default='Tea',
+        blank=True
     )
 
     def __str__(self):
