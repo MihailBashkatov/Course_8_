@@ -5,10 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from habits.models import Habit
+from habits.models import Habit, NiceHabit
 from habits.paginators import MyPagination
-from habits.permissions import IsOwner
-from habits.serializers import HabitSerializer
+from habits.permissions import IsOwner, IsOwnerNiceHabit
+from habits.serializers import HabitSerializer, NiceHabitSerializer
 
 
 class HabitCreateAPIView(generics.CreateAPIView):
@@ -115,3 +115,116 @@ class PublicAPIView(APIView):
         return HttpResponseForbidden(
             "You do not have permission to change a status of public availavility"
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class NiceHabitCreateAPIView(generics.CreateAPIView):
+    """View to create a NiceHabit"""
+
+    serializer_class = NiceHabitSerializer
+    permission_classes = [IsOwnerNiceHabit, IsAuthenticated]
+
+    def perform_create(self, serializer):
+        """Adding logic to get user, who is creating a NiceHabit"""
+        serializer.save(nice_habit_user=self.request.user)
+
+
+class NiceHabitsListAPIView(generics.ListAPIView):
+    """View to create a list of public NiceHabits"""
+
+    serializer_class = NiceHabitSerializer
+    queryset = NiceHabit.objects.all()
+    permission_classes = [
+        IsAuthenticated,
+    ]  # an access for all users
+    pagination_class = MyPagination
+
+    def get(self, request, **kwargs):
+        """Adding logic for pagination"""
+        queryset = NiceHabit.objects.all()
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = NiceHabitSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
+
+
+
+
+
+class NiceHabitRetreiveAPIView(generics.RetrieveAPIView):
+    """View to get a particular NiceHabit for the user"""
+
+    serializer_class = NiceHabitSerializer
+    queryset = NiceHabit.objects.all()
+    permission_classes = [IsAuthenticated, IsOwnerNiceHabit]  # an access only for user
+
+
+#
+#
+class NiceHabitUpdateAPIView(generics.UpdateAPIView):
+    """View to update a particular NiceHabit for the user"""
+
+    serializer_class = NiceHabitSerializer
+    queryset = NiceHabit.objects.all()
+    permission_classes = [IsAuthenticated, IsOwnerNiceHabit]  # an access only for user
+
+
+class NiceHabitDestroyAPIView(generics.DestroyAPIView):
+    """View to delete a particular NiceHabit for the user"""
+
+    queryset = NiceHabit.objects.all()
+    permission_classes = [IsAuthenticated, IsOwnerNiceHabit]  # an access only for user
+
+
+
+
+
+# class PublicAPIView(APIView):
+#     serializer_class = NiceHabitSerializer
+#     queryset = NiceHabit.objects.all()
+#
+#     def post(self, request, pk):
+#         """View to make the NiceHabit publicly available or unavailable only for the user of the habbit."""
+#
+#         message = ""
+#         if NiceHabit.objects.filter(
+#             pk=pk, nice_habit_user=self.request.user
+#         ).exists():  # In case if NiceHabit belongs to particular user
+#
+#             NiceHabit = get_object_or_404(
+#                 NiceHabit, id=pk
+#             )  # get a particular NiceHabit via request
+
+        #     if NiceHabit.NiceHabit_is_public:
+        #         NiceHabit.NiceHabit_is_public = False
+        #         NiceHabit.save()
+        #         message = "NiceHabit is deleted"
+        #
+        #     elif not NiceHabit.NiceHabit_is_public:
+        #         NiceHabit.NiceHabit_is_public = True
+        #         NiceHabit.save()
+        #         message = "NiceHabit is added "
+        #
+        #     return Response({"message": {message}}, status=status.HTTP_201_CREATED)
+        # return HttpResponseForbidden(
+        #     "You do not have permission to change a status of nice habit"
+        # )
