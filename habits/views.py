@@ -1,3 +1,4 @@
+from django.http import HttpResponseForbidden
 from rest_framework import generics, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -87,17 +88,18 @@ class HabitDestroyAPIView(generics.DestroyAPIView):
 class PublicAPIView(APIView):
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]  # an access only for user
-
 
     def post(self, request, pk):
-        """View to make the habit publicly available or unavailable."""
+        """View to make the habit publicly available or unavailable only for the user of the habbit."""
 
         message = ""
-        if Habit.objects.filter(habit_user=self.request.user).exists():
+        if Habit.objects.filter(
+            pk=pk, habit_user=self.request.user
+        ).exists():  # In case if habit belongs to particular user
 
-
-            habit = get_object_or_404(Habit, id=pk)  # get a particular habit via request
+            habit = get_object_or_404(
+                Habit, id=pk
+            )  # get a particular habit via request
 
             if habit.habit_is_public:
                 habit.habit_is_public = False
@@ -109,4 +111,7 @@ class PublicAPIView(APIView):
                 habit.save()
                 message = "Habit is publicly available now"
 
-        return Response({"message": {message}}, status=status.HTTP_201_CREATED)
+            return Response({"message": {message}}, status=status.HTTP_201_CREATED)
+        return HttpResponseForbidden(
+            "You do not have permission to change a status of public availavility"
+        )
