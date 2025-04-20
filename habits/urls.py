@@ -1,13 +1,8 @@
 from django.urls import path
 
-
-
-
-
 from habits.apps import HabitsConfig
 from habits.views import HabitCreateAPIView, HabitsListAPIView, HabitRetreiveAPIView, HabitUpdateAPIView, \
-    HabitDestroyAPIView, HabitsUserListAPIView, PublicAPIView, NiceHabitCreateAPIView, NiceHabitsListAPIView, \
-    NiceHabitRetreiveAPIView, NiceHabitUpdateAPIView, NiceHabitDestroyAPIView
+    HabitDestroyAPIView, HabitsUserListAPIView, PublicAPIView, NiceHabitAPIView, HabitRewardAPIView
 
 app_name = HabitsConfig.name
 
@@ -27,15 +22,10 @@ urlpatterns = [
     ),
     path("public/<int:pk>/", PublicAPIView.as_view(), name="public-habit"),
 
-    # paths for CRUD nive_habit
-    path("nice_habit/create/", NiceHabitCreateAPIView.as_view(), name="nice-habit-create"),
-    path("nice_habits/", NiceHabitsListAPIView.as_view(), name="nice-habits-list"),
+    # paths tpo activate and deactivate habit reward and nice habits
+    path("nice_habit_status/<int:pk>/", NiceHabitAPIView.as_view(), name="nice_habit-status"),
+    path("reward_habit_status/<int:pk>/", HabitRewardAPIView.as_view(), name="reward_habit-status"),
 
-    path("nice_habit/<int:pk>/", NiceHabitRetreiveAPIView.as_view(), name="nice-habit-detail"),
-    path(
-        "nice_habit/update/<int:pk>/", NiceHabitUpdateAPIView.as_view(), name="nice-habit-update"
-    ),
-    path(
-        "nice_habit/delete/<int:pk>/", NiceHabitDestroyAPIView.as_view(), name="nice-habit-delete"
-    ),
+
+
 ]
