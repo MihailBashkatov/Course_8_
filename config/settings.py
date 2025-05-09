@@ -14,6 +14,7 @@ from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -149,7 +150,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=500),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "UPDATE_LAST_LOGIN": True, # sets date of the last login
 }
@@ -178,3 +179,13 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 # Celery Beat settings
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+
+
+
+CELERY_BEAT_SCHEDULE = {
+    "send_reminder": {
+        "task": "habits.tasks.send_reminder",
+        "schedule": timedelta(seconds=10),
+    },
+}
