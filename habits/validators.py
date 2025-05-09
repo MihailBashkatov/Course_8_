@@ -15,6 +15,27 @@ class TimeDurationValidator:
                 raise ValidationError("Time duration shall not be more then 2 mins")
 
 
+class HabitPeriodValidator:
+    """
+    Adding validator to check if repetitive period between habits shall not be more than 7 days
+    """
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value):
+        habit_period = value.get("habit_period")
+        if habit_period:
+            if habit_period > 7:
+                raise ValidationError(
+                    "Time period between repeats habits shall not be more then 7 days"
+                )
+            if habit_period == 0:
+                raise ValidationError(
+                    "Time period between repeats habits shall not be 0 days"
+                )
+
+
 class RewardOrHabitRelatedValidator:
     """
     Adding validator to check if Related habit does not appear together with Reward"""
