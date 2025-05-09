@@ -2,7 +2,8 @@ from django.urls import path
 
 from habits.apps import HabitsConfig
 from habits.views import HabitCreateAPIView, HabitsListAPIView, HabitRetreiveAPIView, HabitUpdateAPIView, \
-    HabitDestroyAPIView, HabitsUserListAPIView, PublicAPIView, NiceHabitAPIView, HabitRewardAPIView
+    HabitDestroyAPIView, HabitsUserListAPIView, PublicAPIView, NiceHabitAPIView, HabitRewardAPIView, \
+    StartHabitUpdateAPIView
 
 app_name = HabitsConfig.name
 
@@ -22,9 +23,13 @@ urlpatterns = [
     ),
     path("public/<int:pk>/", PublicAPIView.as_view(), name="public-habit"),
 
+
     # paths tpo activate and deactivate habit reward and nice habits
-    path("nice_habit_status/<int:pk>/", NiceHabitAPIView.as_view(), name="nice_habit-status"),
-    path("reward_habit_status/<int:pk>/", HabitRewardAPIView.as_view(), name="reward_habit-status"),
+
+    # path("nice_habit_status/<int:pk>/", NiceHabitAPIView.as_view(), name="nice_habit-status"),
+    # path("reward_habit_status/<int:pk>/", HabitRewardAPIView.as_view(), name="reward_habit-status"),
+    #
+    # path("habit_started/<int:pk>/", StartHabitUpdateAPIView.as_view(), name="habit-started"),
 
 
 
