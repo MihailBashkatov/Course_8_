@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=500),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "UPDATE_LAST_LOGIN": True, # sets date of the last login
 }
@@ -189,3 +189,7 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": timedelta(seconds=10),
     },
 }
+
+# Telegram settings
+TELEGRAM_URL = "https://api.telegram.org/bot"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
