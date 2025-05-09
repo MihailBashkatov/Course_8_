@@ -37,8 +37,10 @@ class Habit(models.Model):
     habit_place = models.TextField(verbose_name="Place to have a habit")
 
     habit_time_start = models.TimeField(
-        auto_now=True, verbose_name="Timeset for a habit"
+        auto_now=False, verbose_name="Timeset for a habit"
     )
+
+    # is_habit_started = models.BooleanField(default=False)
 
     habit_action = models.TextField(verbose_name="Action for a habit")
 
@@ -58,7 +60,6 @@ class Habit(models.Model):
     nice_habit_name = models.CharField(
         max_length=300,
         verbose_name="Habit name",
-        default='Draft',
         blank=True
     )
 
@@ -66,9 +67,10 @@ class Habit(models.Model):
 
     habit_reward = models.TextField(
         verbose_name="Reward for a habit",
-        default='Tea',
         blank=True
     )
+
+    related_habit = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Related habit')
 
     def __str__(self):
         return self.habit_name
