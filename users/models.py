@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-
-
 class User(AbstractUser):
     """Registering model User"""
 
@@ -19,6 +17,9 @@ class User(AbstractUser):
         null=True,
         blank=True,
         verbose_name="Saved user image",
+    )
+    telegram_chat_id = models.CharField(
+        max_length=100, verbose_name="Telegram chat ID", blank=True, null=True
     )
 
     USERNAME_FIELD = "email"
