@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg', #adding app drf-yasg
     'rest_framework', #adding app djangorestframework
     'users', # adding app users
     'habits', # adding app habits
