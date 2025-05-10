@@ -36,11 +36,8 @@ class Habit(models.Model):
 
     habit_place = models.TextField(verbose_name="Place to have a habit")
 
-    habit_time_start = models.TimeField(
-        auto_now=False, verbose_name="Timeset for a habit"
-    )
 
-    # is_habit_started = models.BooleanField(default=False)
+    habit_date = models.DateTimeField(auto_now=False,  verbose_name='Date')
 
     habit_action = models.TextField(verbose_name="Action for a habit")
 
