@@ -6,6 +6,7 @@ class User(AbstractUser):
     """Registering model User"""
 
     username = None
+    name = models.CharField(max_length=50, blank=True, null=True, verbose_name="User name")
     email = models.EmailField(unique=True, verbose_name="Email")
     city = models.CharField(max_length=50, blank=True, null=True, verbose_name="City")
     phone_number = models.CharField(
