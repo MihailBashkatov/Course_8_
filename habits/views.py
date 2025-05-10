@@ -11,7 +11,6 @@ from habits.models import Habit
 from habits.paginators import MyPagination
 from habits.permissions import IsOwner
 from habits.serializers import HabitSerializer
-from habits.tasks import send_reminder
 
 
 class HabitCreateAPIView(generics.CreateAPIView):
@@ -110,13 +109,11 @@ class PublicAPIView(APIView):
             if habit.habit_is_public:
                 habit.habit_is_public = False
                 habit.save()
-                send_reminder.delay(email)
                 message = "Habit is not public anymore"
 
             elif not habit.habit_is_public:
                 habit.habit_is_public = True
                 habit.save()
-                send_reminder.delay(email)
                 message = "Habit is publicly available now"
 
             return Response({"message": {message}}, status=status.HTTP_201_CREATED)
