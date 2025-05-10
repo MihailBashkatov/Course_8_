@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "CET"
 
 USE_I18N = True
 
@@ -179,8 +179,6 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 # Celery Beat settings
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-
-
 
 
 CELERY_BEAT_SCHEDULE = {
