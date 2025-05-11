@@ -11,8 +11,8 @@ class TimeDurationValidator:
     def __call__(self, value):
         time_duration = value.get("habit_time_duration")
         if time_duration:
-            if time_duration > 2:
-                raise ValidationError("Time duration shall not be more then 2 mins")
+            if time_duration > 120:
+                raise ValidationError("Time duration shall not be more than 120 seconds")
 
 
 class HabitPeriodValidator:
@@ -46,15 +46,20 @@ class RewardOrHabitRelatedValidator:
         self.field = field
 
     def __call__(self, value, serializer):
-
-        if serializer.instance.related_habit and value.get("habit_reward"):
-            raise ValidationError(
-                f"You can choose either Reward or Related Habit, but not both at once. Currently you have Related Habit: {serializer.instance.related_habit}"
-            )
-        if serializer.instance.habit_reward and value.get("related_habit"):
-            raise ValidationError(
-                f"You can choose either Reward or Related Habit, but not both at once. Currently you have Reward: {serializer.instance.habit_reward}"
-            )
+        if not serializer.instance:
+            if value.get("related_habit") and value.get("habit_reward"):
+                raise ValidationError(
+                    f"You can choose either Reward or Related Habit, but not both at once."
+                )
+        else:
+            if serializer.instance.related_habit and value.get("habit_reward"):
+                raise ValidationError(
+                    f"You can choose either Reward or Related Habit, but not both at once. Currently you have Related Habit: {serializer.instance.related_habit}"
+                )
+            if serializer.instance.habit_reward and value.get("related_habit"):
+                raise ValidationError(
+                    f"You can choose either Reward or Related Habit, but not both at once. Currently you have Reward: {serializer.instance.habit_reward}"
+                )
 
 
 class NiceHabitRelatedValidator:
