@@ -93,9 +93,8 @@ class PublicAPIView(APIView):
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
 
-    def post(self, pk):
+    def post(self, view, pk):
         """View to make the habit publicly available or unavailable only for the user of the habit."""
-
         message = ""
 
         if Habit.objects.filter(
