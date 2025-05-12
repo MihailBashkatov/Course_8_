@@ -10,7 +10,7 @@ from habits.services import send_telegram_message
 
 
 @shared_task
-def send_reminder():
+def send_reminder_and_set_next_date():
     """Task to send Telegram message, if user chose option to get telegram messages"""
     useful_habits_list = Habit.objects.filter(
         is_nice_habit=False
