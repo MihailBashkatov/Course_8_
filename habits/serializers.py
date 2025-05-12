@@ -8,7 +8,7 @@ from habits.validators import (HabitPeriodValidator, NiceHabitRelatedValidator,
 
 
 class HabitSerializer(serializers.ModelSerializer):
-    habit_date = serializers.DateTimeField(required=False,
+    habit_date = serializers.DateTimeField(required=True,
                                            input_formats=["%Y-%m-%d %H:%M"])
     """Serializer for the model Habit."""
     class Meta:
