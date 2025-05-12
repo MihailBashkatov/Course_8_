@@ -19,7 +19,7 @@ Genertate SECRET_KEY
 
 #### To start a project, make sure you are in the folder, where repo is cloned run a command in terminal
 
-    python manage.py runserver.
+    python manage.py runserver
 
 #### To create Superuser, run a command in terminal
 
