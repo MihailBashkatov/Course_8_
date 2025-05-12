@@ -110,7 +110,6 @@ class HabitTestCase(APITestCase):
 
     def test_habit_public_available(self):
         url = reverse("habits:public-habit", args=(self.habit.pk,))
-
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Habit.objects.get(id=self.habit.pk).habit_is_public, False)
